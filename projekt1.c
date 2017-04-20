@@ -75,7 +75,7 @@ void writeMatrix(int n, int slika[][n])
 }
 
 int giveColor(int n, int slika[][n], int i, int j)
-{
+{//nism zihr da je prou
     if (i == -1)
         i = n;
     if (j == -1)
@@ -86,14 +86,21 @@ int giveColor(int n, int slika[][n], int i, int j)
 }
 
 int choose(int n, int slika[][n], int i, int j)
+/*###################################
+#     -1  0  1  j
+#  -1 [0][1][2]
+#   0 [3][x][4]
+#   1 [5][6][7]
+#   i
+####################################*/
 {
     int temp[8];
-    temp[0] = giveColor(n, slika, i - 1, j + 1);
-    temp[1] = giveColor(n, slika, i, j - 1);
-    temp[2] = giveColor(n, slika, i - 1, j);
-    temp[3] = giveColor(n, slika, i + 1, j - 1);
-    temp[4] = giveColor(n, slika, i - 1, j - 1);
-    temp[5] = giveColor(n, slika, i, j + 1);
+    temp[0] = giveColor(n, slika, i - 1, j - 1);
+    temp[1] = giveColor(n, slika, i - 1, j);
+    temp[2] = giveColor(n, slika, i - 1, j + 1);
+    temp[3] = giveColor(n, slika, i, j - 1);
+    temp[4] = giveColor(n, slika, i, j + 1);
+    temp[5] = giveColor(n, slika, i + 1, j - 1);
     temp[6] = giveColor(n, slika, i + 1, j);
     temp[7] = giveColor(n, slika, i + 1, j + 1);
 
