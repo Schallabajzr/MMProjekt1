@@ -52,6 +52,8 @@ void writeMatrixColor(int n, int slika[][n])
                 //white
                 printf("\e[97m\e[107m%d \e[0m", slika[i][j]);
                 break;
+            default:
+                printf("!!");
             }
         }
         printf("\n");
@@ -75,7 +77,8 @@ void writeMatrix(int n, int slika[][n])
 }
 
 int giveColor(int n, int slika[][n], int i, int j)
-{//nism zihr da je prou
+{ //nism zihr da je prou
+    n = n - 1;
     if (i == -1)
         i = n;
     if (j == -1)
@@ -131,11 +134,9 @@ int main()
             {
                 for (int j = 0; j < n; j++)
                 {
-                    novaSlika[i][j] = choose(n - 1, slika, i, j);
+                    novaSlika[i][j] = choose(n, slika, i, j);
                     if (novaSlika[i][j] != barva)
-                    {
                         zmaga = 0;
-                    }
                 }
             }
             writeMatrixColor(n, novaSlika);
@@ -146,19 +147,15 @@ int main()
             {
                 for (int j = 0; j < n; j++)
                 {
-                    slika[i][j] = choose(n - 1, novaSlika, i, j);
+                    slika[i][j] = choose(n, novaSlika, i, j);
                     if (slika[i][j] != barva)
-                    {
                         zmaga = 0;
-                    }
                 }
             }
             writeMatrixColor(n, slika);
         }
         if (zmaga)
-        {
             break;
-        }
     }
     //printf("%d", iter);
 }
