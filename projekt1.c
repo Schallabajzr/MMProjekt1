@@ -1,6 +1,9 @@
+#define _BSD_SOURCE
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
 
 void generateRandomMatrix(int n, int slika[n][n], int min, int max)
 {
@@ -13,7 +16,51 @@ void generateRandomMatrix(int n, int slika[n][n], int min, int max)
     }
 }
 
-void write(int n, int slika[][n])
+void writeMatrixColor(int n, int slika[][n])
+{
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            switch (slika[i][j])
+            {
+            case 0:
+                //light rdeca
+                printf("\e[101m\e[91m%d \e[0m", slika[i][j]);
+                break;
+            case 1:
+                //light green
+                printf("\e[92m\e[102m%d \e[0m", slika[i][j]);
+                break;
+            case 2:
+                //light cyan
+                printf("\e[96m\e[106m%d \e[0m", slika[i][j]);
+                break;
+            case 3:
+                //light yellow
+                printf("\e[93m\e[103m%d \e[0m", slika[i][j]);
+                break;
+            case 4:
+                //light magenta
+                printf("\e[105m\e[95m%d \e[0m", slika[i][j]);
+                break;
+            case 5:
+                //black
+                printf("\e[30m\e[40m%d \e[0m", slika[i][j]);
+                break;
+            case 6:
+                //white
+                printf("\e[97m\e[107m%d \e[0m", slika[i][j]);
+                break;
+            }
+        }
+        printf("\n");
+    }
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    usleep(300000);
+}
+
+void writeMatrix(int n, int slika[][n])
 {
     for (int i = 0; i < n; i++)
     {
@@ -23,7 +70,8 @@ void write(int n, int slika[][n])
         }
         printf("\n");
     }
-    printf("\n");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    usleep(200000);
 }
 
 int giveColor(int n, int slika[][n], int i, int j)
@@ -56,20 +104,14 @@ int main()
 {
     srand(time(NULL));
 
-    int slika[50][50]; 
-        /*={ 
-            {1,2,3,4,5},
-            {5,4,3,2,1},
-            {1,3,5,7,9},
-            {0,2,4,6,8},
-            {5,6,7,8,9}
-        };*/
-    generateRandomMatrix(50,slika, 0, 9);
+    const int n = 10;
+    int slika[n][n];
+    int novaSlika[n][n];
 
-    int novaSlika[50][50];
-    int n = 50;
+    generateRandomMatrix(n, slika, 0, 6);
+    writeMatrixColor(n, slika);
+    usleep(3000000);
 
-    write(n, slika);
     int iter = 0;
     for (int count = 0; 1; count++)
     {
@@ -89,7 +131,7 @@ int main()
                     }
                 }
             }
-            write(n,novaSlika);
+            writeMatrixColor(n, novaSlika);
         }
         else
         {
@@ -104,7 +146,7 @@ int main()
                     }
                 }
             }
-            write(n,slika);
+            writeMatrixColor(n, slika);
         }
         if (zmaga)
         {
