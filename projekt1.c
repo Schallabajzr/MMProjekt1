@@ -40,7 +40,7 @@ int giveColor(int n, int slika[][n], int i, int j)
 int choose(int n, int slika[][n], int i, int j)
 {
     int temp[8];
-    temp[0] = giveColor(n, slika, i - 1, j - 1);
+    temp[0] = giveColor(n, slika, i - 1, j + 1);
     temp[1] = giveColor(n, slika, i, j - 1);
     temp[2] = giveColor(n, slika, i - 1, j);
     temp[3] = giveColor(n, slika, i + 1, j - 1);
@@ -56,7 +56,7 @@ int main()
 {
     srand(time(NULL));
 
-    int slika[500][500]; 
+    int slika[50][50]; 
         /*={ 
             {1,2,3,4,5},
             {5,4,3,2,1},
@@ -64,12 +64,12 @@ int main()
             {0,2,4,6,8},
             {5,6,7,8,9}
         };*/
-    generateRandomMatrix(500,slika, 0, 9);
+    generateRandomMatrix(50,slika, 0, 9);
 
-    int novaSlika[500][500];
-    int n = 500;
+    int novaSlika[50][50];
+    int n = 50;
 
-    //write(n, slika);
+    write(n, slika);
     int iter = 0;
     for (int count = 0; 1; count++)
     {
@@ -89,7 +89,7 @@ int main()
                     }
                 }
             }
-            //write(n,novaSlika);
+            write(n,novaSlika);
         }
         else
         {
@@ -104,12 +104,12 @@ int main()
                     }
                 }
             }
-            //write(n,slika);
+            write(n,slika);
         }
         if (zmaga)
         {
             break;
         }
     }
-    printf("%d", iter);
+    //printf("%d", iter);
 }
