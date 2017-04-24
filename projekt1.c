@@ -4,11 +4,12 @@
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
+#include <string.h>
 
 /*
 V sliko, dimenzij nxn, vstavi nakljucna stevila v razponu [min,max]
 */
-void generateRandomMatrix(int n, int slika[n][n], int min, int max)
+void generateRandomMatrix(int n, int slika[][n], int min, int max)
 {
     for (int i = 0; i < n; i++)
     {
@@ -83,13 +84,13 @@ int *writeMatrixColor(int n, int slika[][n])
 void colorPercent(int *a, int n)
 {
     printf("\nBARVA      ST    %%\n");
-    printf("Rdeca:   %4d %.2f\n", a[0], (double) a[0]/(n*n));
-    printf("Zelena:  %4d %.2f\n", a[1], (double) a[1]/(n*n));
-    printf("Modra:   %4d %.2f\n", a[2], (double) a[2]/(n*n));
-    printf("Rumena:  %4d %.2f\n", a[3], (double) a[3]/(n*n));
-    printf("Magenta: %4d %.2f\n", a[4], (double) a[4]/(n*n));
-    printf("Crna:    %4d %.2f\n", a[5], (double) a[5]/(n*n));
-    printf("Bela:    %4d %.2f\n", a[6], (double) a[6]/(n*n));
+    printf("Rdeca:   %4d %.2f\n", a[0], (double)a[0] / (n * n));
+    printf("Zelena:  %4d %.2f\n", a[1], (double)a[1] / (n * n));
+    printf("Modra:   %4d %.2f\n", a[2], (double)a[2] / (n * n));
+    printf("Rumena:  %4d %.2f\n", a[3], (double)a[3] / (n * n));
+    printf("Magenta: %4d %.2f\n", a[4], (double)a[4] / (n * n));
+    printf("Crna:    %4d %.2f\n", a[5], (double)a[5] / (n * n));
+    printf("Bela:    %4d %.2f\n", a[6], (double)a[6] / (n * n));
 }
 
 /*
@@ -157,36 +158,56 @@ int choose(int n, int slika[][n], int i, int j)
     return temp[rand() % 8];
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    //Seed za random - time(NULL) res random
-    srand(time(NULL));
+    //args 1 velikost matrike
+    //args 2 if color barve, number stevilke
+    //args 3 ime slikce - shroom
 
-    const int n = 30;
-    int slika[n][n]; /*= {
-        {6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6},
-        {6, 6, 6, 5, 5, 6, 6, 0, 0, 0, 0, 5, 5, 6, 6, 6},
-        {6, 6, 5, 6, 6, 6, 6, 0, 0, 0, 0, 6, 6, 5, 6, 6},
-        {6, 5, 6, 6, 6, 6, 0, 0, 0, 0, 0, 0, 6, 6, 5, 6},
-        {6, 5, 6, 6, 6, 0, 0, 6, 6, 6, 6, 0, 0, 6, 5, 6},
-        {5, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 6, 0, 0, 0, 5},
-        {5, 0, 6, 6, 0, 0, 6, 6, 6, 6, 6, 6, 0, 0, 0, 5},
-        {5, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 0, 0, 6, 5},
-        {5, 6, 6, 6, 6, 0, 0, 6, 6, 6, 6, 0, 0, 6, 6, 5},
-        {5, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 5},
-        {5, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 6, 5},
-        {6, 5, 5, 5, 6, 6, 5, 6, 6, 5, 6, 6, 5, 5, 5, 6},
-        {6, 6, 5, 6, 6, 6, 5, 6, 6, 5, 6, 6, 6, 5, 6, 6},
-        {6, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6},
-        {6, 6, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6},
-        {6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6}};
-        //16x16 gobica*/
-        
+    srand(time(NULL)); //Seed za random - time(NULL) res random
+    int n = strtol(argv[1], NULL, 0);
+    if (argc > 3 && strcmp("shroom", argv[3]) == 0){
+        n=16;
+    }
+    
+    int slika[n][n];
+
+   if (argc > 3 && strcmp("shroom", argv[3]) == 0)
+    {
+        int shroom[16][16] = {
+            {6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6},
+            {6, 6, 6, 5, 5, 6, 6, 0, 0, 0, 0, 5, 5, 6, 6, 6},
+            {6, 6, 5, 6, 6, 6, 6, 0, 0, 0, 0, 6, 6, 5, 6, 6},
+            {6, 5, 6, 6, 6, 6, 0, 0, 0, 0, 0, 0, 6, 6, 5, 6},
+            {6, 5, 6, 6, 6, 0, 0, 6, 6, 6, 6, 0, 0, 6, 5, 6},
+            {5, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 6, 0, 0, 0, 5},
+            {5, 0, 6, 6, 0, 0, 6, 6, 6, 6, 6, 6, 0, 0, 0, 5},
+            {5, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 0, 0, 6, 5},
+            {5, 6, 6, 6, 6, 0, 0, 6, 6, 6, 6, 0, 0, 6, 6, 5},
+            {5, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 5},
+            {5, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 6, 5},
+            {6, 5, 5, 5, 6, 6, 5, 6, 6, 5, 6, 6, 5, 5, 5, 6},
+            {6, 6, 5, 6, 6, 6, 5, 6, 6, 5, 6, 6, 6, 5, 6, 6},
+            {6, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6},
+            {6, 6, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6},
+            {6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6}};
+            memcpy(slika,shroom,sizeof(shroom));
+    }
+    else
+    {
+        generateRandomMatrix(n, slika, 0, 6);
+    }
+
     int novaSlika[n][n];
+    if (argc > 2 && strcmp("color", argv[2]) == 0){
+        colorPercent(writeMatrixColor(n, slika), n);
+    } else if (argc > 2 && strcmp("number", argv[2]) == 0){
+        colorPercent(writeMatrix(n, slika), n);
+    }
 
-    generateRandomMatrix(n, slika, 0, 6);
-    colorPercent(writeMatrixColor(n, slika), n);
-    usleep(3000000); //spi 3 sekunde, da se nagledas prvotne slike
+    if(argc != 2){
+        usleep(3000000); //spi 3 sekunde, da se nagledas prvotne slike
+    }
 
     //izmenjavanje slika in novaSlika - dela hitreje
     int iter = 0;
@@ -206,8 +227,14 @@ int main()
                         zmaga = 0;
                 }
             }
-            colorPercent(writeMatrixColor(n, novaSlika), n);
-            usleep(100000);
+            if (argc > 2 && strcmp("color", argv[2]) == 0){
+                colorPercent(writeMatrixColor(n, novaSlika), n);
+            } else if (argc > 2 && strcmp("number", argv[2]) == 0){
+                colorPercent(writeMatrix(n, novaSlika), n);
+            }
+            if(argc != 2){
+                usleep(50000);
+            }
         }
         else
         {
@@ -220,8 +247,14 @@ int main()
                         zmaga = 0;
                 }
             }
-            colorPercent(writeMatrixColor(n, slika), n);
-            usleep(100000);
+            if (argc > 2 && strcmp("color", argv[2]) == 0){
+                colorPercent(writeMatrixColor(n, slika), n);
+            } else if (argc > 2 && strcmp("number", argv[2]) == 0){
+                colorPercent(writeMatrix(n, slika), n);
+            }
+             if(argc != 2){
+                usleep(50000);
+            }
         }
         if (zmaga)
             break; // ce ni bilo spremembe od zadne se zakljuci
