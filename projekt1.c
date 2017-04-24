@@ -32,10 +32,15 @@ Barve so "mapane":
 
     Tako da so razponi [0,2] - RGB, [2,5] - CMYK, [5,6] - BW.
 */
-void writeMatrixColor(int n, int slika[][n]){
-    printf("\e[1;1H\e[2J");//cleara konzolo
-    for (int i = 0; i < n; i++){
-        for (int j = 0; j < n; j++){
+int *writeMatrixColor(int n, int slika[][n])
+{
+    printf("\e[1;1H\e[2J"); //cleara konzolo
+    int *temp = calloc(7, sizeof(int));
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            temp[slika[i][j]]++;
             switch (slika[i][j])
             {
             case 0:
@@ -72,7 +77,19 @@ void writeMatrixColor(int n, int slika[][n]){
         }
         printf("\n");
     }
-    usleep(300000);
+    return temp;
+}
+
+void colorPercent(int *a, int n)
+{
+    printf("\nBARVA      ST    %%\n");
+    printf("Rdeca:   %4d %.2f\n", a[0], (double) a[0]/(n*n));
+    printf("Zelena:  %4d %.2f\n", a[1], (double) a[1]/(n*n));
+    printf("Modra:   %4d %.2f\n", a[2], (double) a[2]/(n*n));
+    printf("Rumena:  %4d %.2f\n", a[3], (double) a[3]/(n*n));
+    printf("Magenta: %4d %.2f\n", a[4], (double) a[4]/(n*n));
+    printf("Crna:    %4d %.2f\n", a[5], (double) a[5]/(n*n));
+    printf("Bela:    %4d %.2f\n", a[6], (double) a[6]/(n*n));
 }
 
 /*
@@ -80,21 +97,27 @@ Izpise matriko z stevilkami.
 
 !Deluje samo ce so v matriki vrednosti 0-9!
 */
-void writeMatrix(int n, int slika[][n]){
-    printf("\e[1;1H\e[2J");//cleara konzolo
-    for (int i = 0; i < n; i++){
-        for (int j = 0; j < n; j++){
+int *writeMatrix(int n, int slika[][n])
+{
+    int *temp = calloc(7, sizeof(int));
+    printf("\e[1;1H\e[2J"); //cleara konzolo
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
             printf("%d ", slika[i][j]);
+            temp[slika[i][j]]++;
         }
         printf("\n");
     }
-    usleep(200000);
+    return temp;
 }
 
 /*
 Pomozna funkcija, ki interpretira matriko kot torus.
 */
-int giveColor(int n, int slika[][n], int i, int j){ //nism zihr da je prou
+int giveColor(int n, int slika[][n], int i, int j)
+{ //nism zihr da je prou
     n = n - 1;
     if (i == -1)
         i = n;
@@ -108,17 +131,18 @@ int giveColor(int n, int slika[][n], int i, int j){ //nism zihr da je prou
 /*
 Funkcija, ki nakljucno izbere vrednost nekega sosednjega piksla.
 */
-int choose(int n, int slika[][n], int i, int j){
+int choose(int n, int slika[][n], int i, int j)
+{
 
-                /*##################
-                #                  #
-                #     -1  0  1  j  #
-                #  -1 [0][1][2]    #
-                #   0 [3][x][4]    #
-                #   1 [5][6][7]    #
-                #   i              #
-                #                  #
-                ###################*/
+    /*##################
+    #                  #
+    #     -1  0  1  j  #
+    #  -1 [0][1][2]    #
+    #   0 [3][x][4]    #
+    #   1 [5][6][7]    #
+    #   i              #
+    #                  #
+    ###################*/
 
     int temp[8];
     temp[0] = giveColor(n, slika, i - 1, j - 1);
@@ -134,63 +158,73 @@ int choose(int n, int slika[][n], int i, int j){
 }
 
 int main()
-{   
+{
     //Seed za random - time(NULL) res random
     srand(time(NULL));
 
-    const int n = 16;
-    int slika[16][16] = {
-            {6,6,6,6,6,5,5,5,5,5,5,6,6,6,6,6},
-            {6,6,6,5,5,6,6,0,0,0,0,5,5,6,6,6},
-            {6,6,5,6,6,6,6,0,0,0,0,6,6,5,6,6},
-            {6,5,6,6,6,6,0,0,0,0,0,0,6,6,5,6},
-            {6,5,6,6,6,0,0,6,6,6,6,0,0,6,5,6},
-            {5,0,0,0,0,0,6,6,6,6,6,6,0,0,0,5},
-            {5,0,6,6,0,0,6,6,6,6,6,6,0,0,0,5},
-            {5,6,6,6,6,0,6,6,6,6,6,6,0,0,6,5},
-            {5,6,6,6,6,0,0,6,6,6,6,0,0,6,6,5},
-            {5,0,6,6,0,0,0,0,0,0,0,0,0,6,6,5},
-            {5,0,0,0,5,5,5,5,5,5,5,5,0,0,6,5},
-            {6,5,5,5,6,6,5,6,6,5,6,6,5,5,5,6},
-            {6,6,5,6,6,6,5,6,6,5,6,6,6,5,6,6},
-            {6,6,5,6,6,6,6,6,6,6,6,6,6,5,6,6},
-            {6,6,6,5,6,6,6,6,6,6,6,6,5,6,6,6},
-            {6,6,6,6,5,5,5,5,5,5,5,5,6,6,6,6}
-        };
+    const int n = 30;
+    int slika[n][n]; /*= {
+        {6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6},
+        {6, 6, 6, 5, 5, 6, 6, 0, 0, 0, 0, 5, 5, 6, 6, 6},
+        {6, 6, 5, 6, 6, 6, 6, 0, 0, 0, 0, 6, 6, 5, 6, 6},
+        {6, 5, 6, 6, 6, 6, 0, 0, 0, 0, 0, 0, 6, 6, 5, 6},
+        {6, 5, 6, 6, 6, 0, 0, 6, 6, 6, 6, 0, 0, 6, 5, 6},
+        {5, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 6, 0, 0, 0, 5},
+        {5, 0, 6, 6, 0, 0, 6, 6, 6, 6, 6, 6, 0, 0, 0, 5},
+        {5, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 0, 0, 6, 5},
+        {5, 6, 6, 6, 6, 0, 0, 6, 6, 6, 6, 0, 0, 6, 6, 5},
+        {5, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 5},
+        {5, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 6, 5},
+        {6, 5, 5, 5, 6, 6, 5, 6, 6, 5, 6, 6, 5, 5, 5, 6},
+        {6, 6, 5, 6, 6, 6, 5, 6, 6, 5, 6, 6, 6, 5, 6, 6},
+        {6, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6},
+        {6, 6, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6},
+        {6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6}};
+        //16x16 gobica*/
+        
     int novaSlika[n][n];
 
     generateRandomMatrix(n, slika, 0, 6);
-    writeMatrixColor(n, slika);
-    usleep(3000000);//spi 3 sekunde, da se nagledas prvotne slike
+    colorPercent(writeMatrixColor(n, slika), n);
+    usleep(3000000); //spi 3 sekunde, da se nagledas prvotne slike
 
     //izmenjavanje slika in novaSlika - dela hitreje
     int iter = 0;
-    for (int count = 0; 1; count++){
+    for (int count = 0; 1; count++)
+    {
         iter++;
         int barva = slika[0][0];
         int zmaga = 1;
-        if (count % 2 == 0){
-            for (int i = 0; i < n; i++){
-                for (int j = 0; j < n; j++){
+        if (count % 2 == 0)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
                     novaSlika[i][j] = choose(n, slika, i, j);
                     if (novaSlika[i][j] != barva)
                         zmaga = 0;
                 }
             }
-            writeMatrixColor(n, novaSlika);
+            colorPercent(writeMatrixColor(n, novaSlika), n);
+            usleep(100000);
         }
-        else{
-            for (int i = 0; i < n; i++){
-                for (int j = 0; j < n; j++){
+        else
+        {
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
                     slika[i][j] = choose(n, novaSlika, i, j);
                     if (slika[i][j] != barva)
                         zmaga = 0;
                 }
             }
-            writeMatrixColor(n, slika);
+            colorPercent(writeMatrixColor(n, slika), n);
+            usleep(100000);
         }
         if (zmaga)
             break; // ce ni bilo spremembe od zadne se zakljuci
     }
-    //printf("%d", iter); counter za stevilo zank
+    printf("Stevilo iteracij: %d\n", iter); //counter za stevilo zank
 }
