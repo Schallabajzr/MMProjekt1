@@ -98,18 +98,18 @@ Izpise matriko z stevilkami.
 
 !Deluje samo ce so v matriki vrednosti 0-9!
 */
-int *writeMatrix(int n, int slika[][n])
+int *writeMatrix(int n, int slika[][n], FILE *f)
 {
     int *temp = calloc(7, sizeof(int));
-    printf("\e[1;1H\e[2J"); //cleara konzolo
+    //printf("\e[1;1H\e[2J"); //cleara konzolo
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            printf("%d ", slika[i][j]);
+            fprintf(f, "%d ", slika[i][j]);
             temp[slika[i][j]]++;
         }
-        printf("\n");
+        fprintf(f, "\n");
     }
     return temp;
 }
@@ -163,6 +163,8 @@ int main(int argc, char *argv[])
     //args 1 velikost matrike
     //args 2 if color barve, number stevilke
     //args 3 ime slikce - shroom
+
+    FILE *f = fopen("matrika.txt", "w+");
 
     srand(time(NULL)); //Seed za random - time(NULL) res random
     int n = strtol(argv[1], NULL, 0);
@@ -230,7 +232,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        generateRandomMatrix(n, slika, 0, 6);
+        generateRandomMatrix(n, slika, 1, 2);
     }
 
     int novaSlika[n][n];
@@ -240,7 +242,7 @@ int main(int argc, char *argv[])
     }
     else if (argc > 2 && strcmp("number", argv[2]) == 0)
     {
-        colorPercent(writeMatrix(n, slika), n);
+        writeMatrix(n, slika, f);
     }
 
     if (argc != 2)
@@ -250,10 +252,11 @@ int main(int argc, char *argv[])
 
     //izmenjavanje slika in novaSlika - dela hitreje
     int iter = 0;
+    int barva;
     for (int count = 0; 1; count++)
     {
         iter++;
-        int barva = slika[0][0];
+        barva = slika[0][0];
         int zmaga = 1;
         if (count % 2 == 0)
         {
@@ -272,11 +275,11 @@ int main(int argc, char *argv[])
             }
             else if (argc > 2 && strcmp("number", argv[2]) == 0)
             {
-                colorPercent(writeMatrix(n, novaSlika), n);
+                writeMatrix(n, novaSlika, f);
             }
             if (argc != 2)
             {
-                usleep(50000);
+                usleep(100000);
             }
         }
         else
@@ -296,15 +299,16 @@ int main(int argc, char *argv[])
             }
             else if (argc > 2 && strcmp("number", argv[2]) == 0)
             {
-                colorPercent(writeMatrix(n, slika), n);
+                writeMatrix(n, slika, f);
             }
             if (argc != 2)
             {
-                usleep(50000);
+                usleep(100000);
             }
         }
         if (zmaga)
             break; // ce ni bilo spremembe od zadne se zakljuci
     }
-    printf("Stevilo iteracij: %d\n", iter); //counter za stevilo zank
+    printf("Stevilo iteracij: %d Barva: %d\n", iter, barva); //counter za stevilo zank
+    fclose(f);
 }
