@@ -5,6 +5,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <string.h>
+#include <omp.h>
 
 /*
 V sliko, dimenzij nxn, vstavi nakljucna stevila v razponu [min,max]
@@ -158,10 +159,82 @@ int choose(int n, int slika[][n], int i, int j)
     return temp[rand() % 8];
 }
 
+void percents(int n, int slika[][n], int novaSlika[][n]) {
+    int iter = 10000;
+    int barva;
+    int barve[7] = {0};
+    int zacetnaSlika[n][n];
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            zacetnaSlika[i][j] = slika[i][j];
+        }
+    }
+
+    #pragma omp parallel for shared(slika, novaSlika) ordered schedule(dynamic)
+    for (int i = 0; i < iter; i++) {
+        //memcpy(slika, zacetnaSlika, sizeof(slika));
+        //memcpy(novaSlika, zacetnaSlika, sizeof(slika));
+        //#pragma omp parallel for
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                slika[i][j] = zacetnaSlika[i][j];
+            }
+        }
+
+        for (int count = 0; 1; count++)
+        {
+            barva = slika[0][0];
+            int zmaga = 1;
+            if (count % 2 == 0)
+            {
+                int i = 0;
+                int j = 0;
+                //paralelololo
+                //#pragma omp parallel for collapse(2) private(i, j) shared(slika, novaSlika, barva) num_threads(2)
+                for (i = 0; i < n; i++)
+                {
+                    for (j = 0; j < n; j++)
+                    {
+                        novaSlika[i][j] = choose(n, slika, i, j);
+                        if (novaSlika[i][j] != barva)
+                            zmaga = 0;
+                    }
+                }
+            }
+            else
+            {
+                int i = 0;
+                int j = 0;
+                //paralel
+                //#pragma omp parallel for collapse(2) private(i, j) shared(slika, novaSlika, barva) num_threads(2)
+                for (i = 0; i < n; i++)
+                {
+                    for (j = 0; j < n; j++)
+                    {
+                        slika[i][j] = choose(n, novaSlika, i, j);
+                        if (slika[i][j] != barva)
+                            zmaga = 0;
+                    }
+                }
+            }
+            if (zmaga) break; // ce ni bilo spremembe od zadne se zakljuci
+        }
+        barve[barva]++;
+    }
+    printf("\nBARVA   Delez\n");
+    printf("Rdeca:   %.2f\n", (double) barve[0] / iter);
+    printf("Zelena:  %.2f\n", (double) barve[1] / iter);
+    printf("Modra:   %.2f\n", (double) barve[2] / iter);
+    printf("Rumena:  %.2f\n", (double) barve[3] / iter);
+    printf("Magenta: %.2f\n", (double) barve[4] / iter);
+    printf("Crna:    %.2f\n", (double) barve[5] / iter);
+    printf("Bela:    %.2f\n", (double) barve[6] / iter);
+}
+
 int main(int argc, char *argv[])
 {
     //args 1 velikost matrike
-    //args 2 if color barve, number stevilke
+    //args 2 if color: barve, number: stevilke, para: paralelno primerja procente
     //args 3 ime slikce - shroom
 
     FILE *f = fopen("matrika.txt", "w+");
@@ -243,6 +316,17 @@ int main(int argc, char *argv[])
     else if (argc > 2 && strcmp("number", argv[2]) == 0)
     {
         writeMatrix(n, slika, f);
+    }
+    else if (argc > 2 && strcmp("para", argv[2]) == 0)
+    {
+        colorPercent(writeMatrixColor(n, slika), n);
+        time_t start,end;
+        start=clock();
+        percents(n, slika, novaSlika);
+        end=clock();
+        int t=(end-start)/CLOCKS_PER_SEC;
+        printf("preteklo: %d\n", t);
+        exit(0);
     }
 
     if (argc != 2)
