@@ -160,7 +160,7 @@ int choose(int n, int slika[][n], int i, int j)
 }
 
 void percents(int n, int slika[][n], int novaSlika[][n]) {
-    int iter = 10000;
+    int iter = 1000;
     int barva;
     int barve[7] = {0};
     int zacetnaSlika[n][n];
@@ -170,10 +170,8 @@ void percents(int n, int slika[][n], int novaSlika[][n]) {
         }
     }
 
-    #pragma omp parallel for shared(slika, novaSlika) ordered schedule(dynamic)
+    //#pragma omp parallel for shared(slika, novaSlika) ordered schedule(dynamic)
     for (int i = 0; i < iter; i++) {
-        //memcpy(slika, zacetnaSlika, sizeof(slika));
-        //memcpy(novaSlika, zacetnaSlika, sizeof(slika));
         //#pragma omp parallel for
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -189,7 +187,7 @@ void percents(int n, int slika[][n], int novaSlika[][n]) {
             {
                 int i = 0;
                 int j = 0;
-                //paralelololo
+                //paralel
                 //#pragma omp parallel for collapse(2) private(i, j) shared(slika, novaSlika, barva) num_threads(2)
                 for (i = 0; i < n; i++)
                 {
